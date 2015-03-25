@@ -2,11 +2,15 @@
 
 class IdentityStore
 {
-    public function getByProvider($provider, $providerUserDetails)
+    public function getByProvider($provider, $providerUserDetails, $user = null)
     {
-        return OAuthIdentity::where('provider', $provider)
-            ->where('provider_user_id', $providerUserDetails->userId)
-            ->first();
+        $q = OAuthIdentity::where('provider', $provider)
+            ->where('provider_user_id', $providerUserDetails->userId);
+
+        if($user) 
+            $q = $q->where('user_id', $user->id);
+
+        return $q->first();
     }
 
     public function flush($user, $provider)
@@ -21,8 +25,8 @@ class IdentityStore
         $identity->save();
     }
 
-    public function userExists($provider, ProviderUserDetails $details)
+    public function userExists($user, $provider, ProviderUserDetails $details)
     {
-        return (bool) $this->getByProvider($provider, $details);
+        return (bool) $this->getByProvider($provider, $details, $user);
     }
 }

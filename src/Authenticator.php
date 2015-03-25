@@ -31,12 +31,11 @@ class Authenticator
 
     public function revoke($providerAlias) {
         $user = \Auth::getUser();
-        return $this
-            ->identities
-            ->getByProvider($providerAlias, new ProviderUserDetails([ 'userId' => $user->id ]))
+
+        return OAuthIdentity::where('provider', $providerAlias)
+            ->where('user_id', $user->id)
             ->delete();
     }
-        
 
     public function associate($providerAlias, $userDetails, Closure $callback = null) {
         $user = \Auth::getUser();
@@ -76,7 +75,7 @@ class Authenticator
 
     protected function storeProviderIdentity($user, $provider, ProviderUserDetails $details)
     {
-        if ($this->identities->userExists($provider, $details)) {
+        if ($this->identities->userExists($user, $provider, $details)) {
             $this->updateProviderIdentity($provider, $details);
         } else {
             $this->addProviderIdentity($user, $provider, $details);
