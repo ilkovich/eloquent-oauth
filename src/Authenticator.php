@@ -29,6 +29,15 @@ class Authenticator
         $this->auth->login($user);
     }
 
+    public function revoke($providerAlias) {
+        $user = \Auth::getUser();
+        return $this
+            ->identities
+            ->getByProvider($providerAlias, new ProviderUserDetails([ 'userId' => $user->id ]))
+            ->delete();
+    }
+        
+
     public function associate($providerAlias, $userDetails, Closure $callback = null) {
         $user = \Auth::getUser();
         if ($callback) {
