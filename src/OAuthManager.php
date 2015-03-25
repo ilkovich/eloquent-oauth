@@ -41,6 +41,15 @@ class OAuthManager
         return $this->authenticator->login($providerAlias, $details, $callback);
     }
 
+    public function associate($providerAlias, Closure $callback = null, $requiresAuth = true) {
+        if ($requiresAuth && ! $this->stateManager->verifyState()) {
+            throw new InvalidAuthorizationCodeException;
+        }
+        $details = $this->getProvider($providerAlias)->getUserDetails();
+
+        return $this->authenticator->associate($providerAlias, $details, $callback);
+    }
+
     protected function getProvider($providerAlias)
     {
         return $this->providers->getProvider($providerAlias);

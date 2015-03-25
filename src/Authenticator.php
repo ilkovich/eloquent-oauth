@@ -29,6 +29,14 @@ class Authenticator
         $this->auth->login($user);
     }
 
+    public function associate($providerAlias, $userDetails, Closure $callback = null) {
+        $user = \Auth::getUser();
+        if ($callback) {
+            $callback($user, $userDetails);
+        }
+        $this->storeProviderIdentity($user, $providerAlias, $userDetails);
+    }
+
     protected function getUser($provider, $details)
     {
         if ($this->identities->userExists($provider, $details)) {
