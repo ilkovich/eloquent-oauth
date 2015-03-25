@@ -32,9 +32,9 @@ class OAuthManager
         return $this->authorizer->authorize($this->getProvider($providerAlias), $state);
     }
 
-    public function login($providerAlias, Closure $callback = null)
+    public function login($providerAlias, Closure $callback = null, $requiresAuth = true)
     {
-        if (! $this->stateManager->verifyState()) {
+        if ($requiresAuth && ! $this->stateManager->verifyState()) {
             throw new InvalidAuthorizationCodeException;
         }
         $details = $this->getProvider($providerAlias)->getUserDetails();
