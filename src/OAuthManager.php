@@ -50,6 +50,10 @@ class OAuthManager
         return $this->authenticator->associate($providerAlias, $details, $callback);
     }
 
+    public function checkAssociation($providerAlias) {
+        return $this->authenticator->checkAssociation($providerAlias);
+    }
+
     protected function getProvider($providerAlias)
     {
         return $this->providers->getProvider($providerAlias);

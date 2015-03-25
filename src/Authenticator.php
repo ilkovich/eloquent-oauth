@@ -37,6 +37,14 @@ class Authenticator
         $this->storeProviderIdentity($user, $providerAlias, $userDetails);
     }
 
+    public function checkAssociation($providerAlias) {
+        $user = \Auth::getUser();
+
+        return OAuthIdentity::whereUserId($user->id)
+            ->whereProvider($providerAlias)
+            ->count();
+    }
+
     protected function getUser($provider, $details)
     {
         if ($this->identities->userExists($provider, $details)) {
