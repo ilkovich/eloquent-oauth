@@ -51,7 +51,11 @@ class Authenticator
 
         return OAuthIdentity::whereUserId($user->id)
                     ->whereIn('provider', $providerAliases)
-                    ->get();
+                    ->get()
+                    ->reduce(function($carry, $i) { 
+                        $carry[$i['provider']] = $i->toArray(); 
+                        return $carry; 
+                    });
     }
 
     public function getAssociation($providerAlias, $user = null) {
