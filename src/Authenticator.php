@@ -45,8 +45,27 @@ class Authenticator
         $this->storeProviderIdentity($user, $providerAlias, $userDetails);
     }
 
-    public function checkAssociation($providerAlias) {
-        $user = \Auth::getUser();
+    public function getAllAssociations(array $providerAliases, $user = null) {
+        if(!$user)
+            $user = \Auth::getUser();
+
+        return OAuthIdentity::whereUserId($user->id)
+                    ->whereIn('provider', $providerAliases)
+                    ->get();
+    }
+
+    public function getAssociation($providerAlias, $user = null) {
+        if(!$user)
+            $user = \Auth::getUser();
+
+        return OAuthIdentity::whereUserId($user->id)
+            ->whereProvider($providerAlias)
+            ->first();
+    }
+
+    public function checkAssociation($providerAlias, $user = null) {
+        if(!$user)
+            $user = \Auth::getUser();
 
         return OAuthIdentity::whereUserId($user->id)
             ->whereProvider($providerAlias)

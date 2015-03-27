@@ -54,6 +54,14 @@ class OAuthManager
         return $this->authenticator->revoke($providerAlias);
     }
 
+    public function getAssociation($providerAlias, $user = null) {
+        return $this->authenticator->getAssociation($providerAlias, $user);
+    }
+
+    public function getAllAssociations(array $providerAliases, $user = null) {
+        return $this->authenticator->getAllAssociations($providerAliases, $user);
+    }
+
     public function checkAssociation($providerAlias) {
         return $this->authenticator->checkAssociation($providerAlias);
     }
