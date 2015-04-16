@@ -2,6 +2,9 @@
 
 use AdamWathan\EloquentOAuth\Exceptions\InvalidAuthorizationCodeException;
 
+use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\BadResponseException;
+
 class SpotifyProvider extends Provider
 {
     protected $authorizeUrl   = "https://accounts.spotify.com/authorize";
@@ -26,12 +29,7 @@ class SpotifyProvider extends Provider
 
     protected function parseTokenResponse($response)
     {
-        $params = [];
-        parse_str($response, $params);
-        if (! isset($params['access_token'])) {
-            throw new InvalidAuthorizationCodeException;
-        }
-        return $params['access_token'];
+        return json_decode($response);
     }
 
     protected function parseUserDataResponse($response)
@@ -74,4 +72,35 @@ class SpotifyProvider extends Provider
         return implode(' ', $this->scope);
     }
 
+    protected function requestAccessToken()
+    {
+        $url = $this->getAccessTokenBaseUrl();
+        try {
+            $response = $this->httpClient->post($url, [
+                'body' => [
+                    'code' => $this->getAuthorizationCode(),
+                    'client_id' => $this->clientId,
+                    'client_secret'=>$this->clientSecret,
+                    'redirect_uri'=>$this->redirectUri(),
+                    'grant_type'=>'authorization_code'
+                ]
+            ]);
+        } catch (BadResponseException $e) {
+            dd([$url, $body, (string)$e->getResponse()]);
+            throw new InvalidAuthorizationCodeException((string) $e->getResponse());
+        }
+        return $this->parseTokenResponse((string) $response->getBody());
+    }
+
+    protected function buildUserDataUrl()
+    {
+        $url = $this->getUserDataUrl();
+        $url .= "?access_token=".$this->accessToken->access_token;
+        return $url;
+    }
+
+    protected function redirectUri()
+    {
+        return urlencode($this->redirectUri);
+    }
 }

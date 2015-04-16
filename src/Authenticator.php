@@ -108,17 +108,18 @@ class Authenticator
     protected function updateProviderIdentity($provider, ProviderUserDetails $details)
     {
         $identity = $this->identities->getByProvider($provider, $details);
-        $identity->access_token = $details->accessToken;
+        $identity->access_token = is_string($details->accessToken) ? $details->accessToken : json_encode($details->accessToken);
         $this->identities->store($identity);
     }
 
     protected function addProviderIdentity($user, $provider, ProviderUserDetails $details)
     {
+        if(!$user) throw new \Exception("User missing");
         $identity = new OAuthIdentity;
         $identity->user_id = $user->getKey();
         $identity->provider = $provider;
         $identity->provider_user_id = $details->userId;
-        $identity->access_token = $details->accessToken;
+        $identity->access_token = is_string($details->accessToken) ? $details->accessToken : json_encode($details->accessToken);
         $this->identities->store($identity);
     }
 }
