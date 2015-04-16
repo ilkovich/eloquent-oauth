@@ -32,6 +32,9 @@ abstract class Provider implements ProviderInterface
         $this->clientId = $config['id'];
         $this->clientSecret = $config['secret'];
         $this->redirectUri = $config['redirect'];
+        if(substr($this->redirectUri, 0, 4) !==  'http')
+            $this->redirectUri = url($this->redirectUri);
+
         if (isset($config['scope'])) {
             $this->scope = array_merge($this->scope, $config['scope']);
         }
