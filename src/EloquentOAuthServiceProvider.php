@@ -12,7 +12,8 @@ class EloquentOAuthServiceProvider extends ServiceProvider {
         'linkedin' => 'AdamWathan\\EloquentOAuth\\Providers\\LinkedInProvider',
         'instagram' => 'AdamWathan\\EloquentOAuth\\Providers\\InstagramProvider',
         'soundcloud' => 'AdamWathan\\EloquentOAuth\\Providers\\SoundCloudProvider',
-        'instapaper' => 'AdamWathan\\EloquentOAuth\\Providers\\InstapaperProvider'
+        'instapaper' => 'AdamWathan\\EloquentOAuth\\Providers\\InstapaperProvider',
+        'spotify' => 'AdamWathan\\EloquentOAuth\\Providers\\SpotifyProvider',
     ];
 
     /**
