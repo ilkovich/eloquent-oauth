@@ -147,7 +147,7 @@ abstract class Provider implements ProviderInterface
     }
 
     protected function refreshToken(OAuthIdentity $identity) {
-        return true;
+        return $identity->access_token;
     }
 
     abstract protected function getAuthorizeUrl();

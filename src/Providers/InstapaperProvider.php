@@ -37,7 +37,7 @@ class InstapaperProvider implements ProviderInterface
         //stub just to make sure we have state setup
         return true;
     }
-    
+
     private function generateHeaders($bodyParams, $url) {
         $headers = [
             "oauth_version"          => '1.0',
@@ -59,9 +59,9 @@ class InstapaperProvider implements ProviderInterface
         return $this->to_header($headers);
     }
 
-      /**
-       * builds the Authorization: header
-       */
+    /**
+     * builds the Authorization: header
+     */
     public function to_header($parameters) {
         $first = true;
         $out = 'OAuth';
@@ -149,7 +149,7 @@ class InstapaperProvider implements ProviderInterface
     public function getUserDetails()
     {
         $bodyParams = [
-                "x_auth_username" => \Input::get('username'),
+            "x_auth_username" => \Input::get('username'),
                 "x_auth_password" => \Input::get('password'),
                 "x_auth_mode"     => 'client_auth'
             ];
@@ -192,7 +192,7 @@ class InstapaperProvider implements ProviderInterface
         $details = array_merge($response[0], $map);
 
         return new UserDetails([
-                'accessToken' => json_encode($map),
+                'accessToken' => $map,
                 'userId' =>  $details['user_id'],
                 'email' => $details['username']
             ], $details);
