@@ -1,6 +1,7 @@
 <?php namespace AdamWathan\EloquentOAuth\Providers;
 
 use AdamWathan\EloquentOAuth\Exceptions\InvalidAuthorizationCodeException;
+use AdamWathan\EloquentOAuth\OAuthIdentity;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\BadResponseException;
@@ -86,7 +87,6 @@ class SpotifyProvider extends Provider
                 ]
             ]);
         } catch (BadResponseException $e) {
-            dd([$url, $body, (string)$e->getResponse()]);
             throw new InvalidAuthorizationCodeException((string) $e->getResponse());
         }
         return $this->parseTokenResponse((string) $response->getBody());
@@ -102,5 +102,33 @@ class SpotifyProvider extends Provider
     protected function redirectUri()
     {
         return urlencode($this->redirectUri);
+    }
+
+    /**
+     * Some providers expire tokens, this method ensures that they are in working condition
+     * 
+     * @param OAuthIdentity $identity 
+     * @access protected
+     * @return void
+     */
+    public function refreshToken(OAuthIdentity $identity) {
+        $token = $identity->access_token;
+
+        $url = $this->getAccessTokenBaseUrl();
+        try {
+            $response = $this->httpClient->post($url, [
+                'body' => [
+                    'refresh_token' => $token->refresh_token,
+                    'grant_type'=>'refresh_token',
+                ],
+                'headers' => [
+                    'Authorization' => 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret)
+                ]
+            ]);
+        } catch (BadResponseException $e) {
+            throw new InvalidAuthorizationCodeException((string) $e->getResponse());
+        }
+
+        return $this->parseTokenResponse((string) $response->getBody());
     }
 }

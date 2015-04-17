@@ -14,6 +14,10 @@ class OAuthIdentity extends Eloquent
 {
     protected static $configuredTable = 'oauth_identities';
 
+    protected $casts = [
+        'access_token' => 'object'
+    ];
+
     public static function configureTable($table)
     {
         static::$configuredTable = $table;

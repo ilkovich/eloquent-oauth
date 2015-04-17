@@ -66,6 +66,16 @@ class OAuthManager
         return $this->authenticator->checkAssociation($providerAlias);
     }
 
+    public function refreshToken(OAuthIdentity $ident) {
+        $ident->access_token = (object)array_merge(
+            (array)$ident->access_token,
+            (array)$this->getProvider($ident->provider)->refreshToken($ident)
+        );
+        $ident->save();
+
+        return $ident;
+    }
+
     protected function getProvider($providerAlias)
     {
         return $this->providers->getProvider($providerAlias);

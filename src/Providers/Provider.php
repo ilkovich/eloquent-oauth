@@ -3,6 +3,7 @@
 use AdamWathan\EloquentOAuth\ProviderUserDetails as UserDetails;
 use AdamWathan\EloquentOAuth\Exceptions\ApplicationRejectedException;
 use AdamWathan\EloquentOAuth\Exceptions\InvalidAuthorizationCodeException;
+use AdamWathan\EloquentOAuth\OAuthIdentity;
 use Illuminate\Http\Request as Input;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\BadResponseException;
@@ -143,6 +144,10 @@ abstract class Provider implements ProviderInterface
             throw new InvalidAuthorizationCodeException;
         }
         return $response->access_token;
+    }
+
+    protected function refreshToken(OAuthIdentity $identity) {
+        return true;
     }
 
     abstract protected function getAuthorizeUrl();
