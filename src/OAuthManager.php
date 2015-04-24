@@ -66,7 +66,9 @@ class OAuthManager
         return $this->authenticator->checkAssociation($providerAlias);
     }
 
-    public function refreshToken(OAuthIdentity $ident) {
+    public function refresh($providerAlias, $user = null) {
+        $ident = $this->getAssociation($providerAlias, $user);
+
         $ident->access_token = (object)array_merge(
             (array)$ident->access_token,
             (array)$this->getProvider($ident->provider)->refreshToken($ident)
